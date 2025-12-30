@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>숫자 마술</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+.card {
+    display: grid;
+    grid-template-columns: repeat(6, 60px);
+    gap: 5px;
+    justify-content: center;
+    margin: 20px 0;
+}
+.card div {
+    border: 1px solid #333;
+    padding: 5px;
+}
+button {
+    font-size: 18px;
+    margin: 10px;
+    padding: 10px 20px;
+}
+</style>
+</head>
+<body>
+
+<h1>숫자 마술 by 김범준</h1>
+<p id="stepText">1~60 사이의 수를 마음속으로 생각하세요</p>
+
+<div class="card" id="card"></div>
+
+<!-- 예 / 아니오 버튼 -->
+<div id="ynButtons">
+    <button onclick="answer(true)">예</button>
+    <button onclick="answer(false)">아니오</button>
+</div>
+
+<!-- 종료 / 다시시작 버튼 -->
+<div id="endButtons" style="display:none;">
+    <button onclick="restart()">다시시작</button>
+</div>
+
+<script>
+const cards = [
+    [1,11,21,31,41,51,3,13,23,33,43,53,5,15,25,35,45,55,7,17,27,37,47,57,9,19,29,39,49,59],
+    [2,11,22,31,42,51,3,14,23,34,43,54,6,15,26,35,44,55,7,18,27,38,47,58,10,19,30,39,50,59],
+    [4,13,22,31,44,53,5,14,23,36,45,54,6,15,28,37,46,55,7,20,29,38,47,60,12,21,30,39,52],
+    [8,13,26,31,44,57,9,14,27,40,45,58,10,15,28,41,46,59,11,24,29,42,47,60,12,25,30,43,56],
+    [16,21,26,31,52,57,17,22,27,48,53,58,18,23,28,49,54,59,19,24,29,50,55,60,20,25,30,51,56],
+    [32,37,42,47,52,57,33,38,43,48,53,58,34,39,44,49,54,59,35,40,45,50,55,60,36,41,46,51,56]
+];
+
+let step = -1;   // 아직 카드 안 보여준 상태
+let yournum = 0;
+const adds = [1,2,4,8,16,32];
+
+function showCard() {
+    const cardDiv = document.getElementById("card");
+    cardDiv.innerHTML = "";
+    cards[step].forEach(n => {
+        const d = document.createElement("div");
+        d.textContent = n;
+        cardDiv.appendChild(d);
+    });
+    document.getElementById("stepText").textContent =
+        `카드 ${step + 1} : 숫자가 있나요?`;
+}
+
+function answer(yes) {
+    // 첫 클릭 → 카드 1번 표시
+    if (step === -1) {
+        step = 0;
+        showCard();
+        return;
+    }
+
+    if (yes) yournum += adds[step];
+    step++;
+
+    if (step < 6) {
+        showCard();
+    } else {
+        // 결과 화면
+        document.getElementById("card").innerHTML = "";
+        document.getElementById("stepText").textContent =
+            `당신이 생각한 숫자는 👉 ${yournum} 입니다!`;
+
+        document.getElementById("ynButtons").style.display = "none";
+        document.getElementById("endButtons").style.display = "block";
+    }
+}
+
+function restart() {
+    step = -1;
+    yournum = 0;
+
+    document.getElementById("endButtons").style.display = "none";
+    document.getElementById("ynButtons").style.display = "block";
+    document.getElementById("card").innerHTML = "";
+    document.getElementById("stepText").textContent =
+        "1~60 사이의 수를 마음속으로 생각하세요";
+}
+
+</script>
+
+</body>
+</html>
